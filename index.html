@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Космічна академія</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#101335;--panel:#1b1f4d;--line:#3a3f8f;--sun:#ffc83d;--coral:#ff7a59;--mint:#5fe0b7;--tx:#fff6e3;--mu:#aab0e6}
+*{box-sizing:border-box}
+body{margin:0;font:18px/1.5 Nunito,"Segoe UI",system-ui,sans-serif;color:var(--tx);background:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 100px 80px,#fffa,transparent),radial-gradient(1.5px 1.5px at 60px 130px,#ffe9a8,transparent),var(--bg);background-size:150px 150px}
+header,main,footer{max-width:760px;margin:0 auto;padding:14px 16px}
+.brand{display:flex;align-items:center;gap:14px}
+.sunball{width:60px;height:60px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,#fff1a8,#ffb52e 60%,#ff8a1f);box-shadow:0 0 0 8px #ffc83d22,0 0 40px #ffb52e88}
+h1{font-size:clamp(28px,7vw,44px);font-weight:900;line-height:1.1;margin:0}
+h2{font-size:22px;font-weight:900;margin:0 0 6px}
+p{margin:.5em 0}.mu{color:var(--mu)}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:14px}
+.tab{font:inherit;font-size:13px;font-weight:700;line-height:1.25;color:var(--tx);background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:10px 6px;cursor:pointer;min-height:56px}
+.tab[aria-selected=true]{background:var(--sun);border-color:var(--sun);color:#2a1d00}
+.pill{display:inline-block;margin:10px 0 0;padding:4px 14px;border-radius:99px;background:var(--panel);border:2px solid var(--line);font-weight:800}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:20px;padding:18px}
+.btn{font:inherit;font-weight:800;background:var(--sun);color:#2a1d00;border:2px solid var(--sun);border-radius:14px;padding:10px 18px;min-height:48px;cursor:pointer;margin:8px 8px 0 0}
+.btn.alt{background:transparent;color:var(--tx);border-color:var(--line)}
+:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+.pl{position:relative;display:inline-block;width:var(--s);height:var(--s);border-radius:50%;flex:none;background:radial-gradient(circle at 35% 30%,var(--a),var(--b))}
+.pl.ring::after{content:"";position:absolute;inset:32% -32%;border:4px solid #e8d5a0;border-radius:50%;transform:rotate(-18deg)}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.slot{font:inherit;min-height:104px;border:2px dashed var(--line);background:none;border-radius:16px;color:var(--mu);font-weight:700;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer}
+.slot b{font-size:22px;color:var(--sun)}
+.slot.over{border-color:var(--sun);background:#ffc83d18}
+.slot.full{border:2px solid var(--mint);color:var(--tx);cursor:default}
+.bank{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;min-height:90px}
+.chip{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;font:inherit;font-weight:700;font-size:15px;color:var(--tx);background:none;border:2px solid transparent;border-radius:14px;padding:6px 8px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.chip.sel{border-color:var(--sun);background:#ffc83d18}
+.ghost{position:fixed;pointer-events:none;transform:translate(-50%,-50%);z-index:9;opacity:.9}
+.msg{min-height:3em;font-weight:700}.msg.ok{color:var(--mint)}.msg.bad{color:#ffb09e}
+.hints{padding-left:24px;margin:8px 0}.hints li{margin:4px 0}
+.opts{display:grid;gap:8px;margin:12px 0}
+.opt{font:inherit;font-weight:700;color:var(--tx);text-align:left;background:#262b6b;border:2px solid var(--line);border-radius:14px;padding:12px 14px;min-height:48px;cursor:pointer}
+.opt:disabled{cursor:default}.opt:disabled:not(.ok):not(.bad){opacity:.55}
+.opt.ok{border-color:var(--mint);background:#0f4a3d}.opt.bad{border-color:var(--coral);background:#5a2230}
+.q{font-size:22px;font-weight:800;line-height:1.3}
+.tbl{width:100%;border-collapse:collapse;margin:10px 0;text-align:left}.tbl td,.tbl th{padding:8px 4px;border-bottom:2px solid var(--line)}.tbl td+td,.tbl th+th{text-align:right;white-space:nowrap}.tbl th{color:var(--sun);font-size:20px}
+.end{text-align:center}.big{font-size:40px;font-weight:900;color:var(--sun);margin:.2em 0}.star{font-size:72px;line-height:1.1}
+footer{text-align:center}footer button{font:inherit;font-size:14px;color:var(--mu);background:none;border:0;text-decoration:underline;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand"><span class="sunball"></span><div><h1>Космічна академія</h1><p class="mu">Мандрівка Сонячною системою для 4 класу</p></div></div>
+ <nav id="tabs" class="tabs" role="tablist"></nav>
+ <p id="score" class="pill"></p>
+</header>
+<main id="view"></main>
+<footer><button id="reset">Почати все спочатку</button></footer>
+<script>
+const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s),sh=a=>[...a].sort(()=>Math.random()-.5);
+const P=[
+{n:"Меркурій",s:22,a:"#d6d0c6",b:"#6e6a64",q:["Я найменша планета Сонячної системи.","Я найближча до Сонця й дуже швидко облітаю його.","Мій рік триває лише 88 земних діб."],f:"Найменша планета й найближча до Сонця. Рік тут триває лише 88 земних діб!"},
+{n:"Венера",s:34,a:"#f7dc96",b:"#c98a3a",q:["Я розміром майже як Земля, але мене закривають густі хмари.","Я обертаюся в протилежний бік: Сонце на мені сходить на заході.","Я найгарячіша планета: близько 465 °C."],f:"Найгарячіша планета, навіть гарячіша за Меркурій. Сонце тут сходить на заході!"},
+{n:"Земля",s:36,a:"#59b0ff",b:"#1f7a4d",q:["Я єдина відома планета, на якій є життя.","Моя поверхня на 71 % вкрита водою.","У мене є один природний супутник — Місяць."],f:"Єдина відома планета з життям. Води на ній так багато, що з космосу вона здається блакитною."},
+{n:"Марс",s:28,a:"#ff8a68",b:"#a8341c",q:["Мене називають червоною планетою.","На мені є найвища гора Сонячної системи — Олімп.","Колись на мені текли річки й були озера: марсоходи знайшли їхні сліди."],f:"Колись на Марсі була вода: марсоходи знайшли висохлі русла річок і озер. Лід є й тепер — на полюсах і під поверхнею. Гора Олімп у 2,5 раза вища за Еверест!"},
+{n:"Юпітер",s:54,a:"#efcaa0",b:"#b0743f",q:["Я найбільша планета: в мені вмістилося б понад 1000 Земель.","Я газовий гігант без твердої поверхні.","На мені вже кілька століть лютує буря — Велика червона пляма."],f:"Найбільша планета. Велика червона пляма — буря, що триває вже кілька століть. У Юпітера понад 90 супутників."},
+{n:"Сатурн",s:42,a:"#f6e3a8",b:"#c2a25a",q:["Я газовий гігант із найвідомішими кільцями.","Мої кільця складаються з льоду й каміння.","Я легша за воду: у величезному океані я б плавала."],f:"Кільця — це мільярди шматочків льоду й каміння, від піщинок до брил завбільшки з будинок. Густина Сатурна менша за густину води."},
+{n:"Уран",s:42,a:"#a8f3f0",b:"#4bb6c4",q:["Я крижаний гігант блакитно-зеленого кольору.","Я обертаюся так, ніби лежу на боці.","Мій рік триває 84 земних роки."],f:"Уран «лежить на боці». Один його рік — це 84 земних роки, тож людина за все життя прожила б лише один рік Урана."},
+{n:"Нептун",s:42,a:"#7f9bff",b:"#2b3fb8",q:["Я найдальша планета від Сонця.","На мені дмуть найсильніші вітри: понад 2000 км/год.","Мій рік триває 165 земних років."],f:"Найдальша й дуже вітряна планета: вітер сильніший за швидкість звуку. Її відкрили за розрахунками, ще до того, як побачили в телескоп."}
+];
+P.forEach((p,i)=>p.o=i+1);
+const R=[...P,
+{n:"Сонце",q:["Я зірка, а не планета.","Навколо мене обертаються всі планети.","Моє світло летить до Землі близько 8 хвилин."],f:"Сонце — гаряча зірка. Його світло летить до Землі близько 8 хвилин, а в Сонце вмістилося б понад мільйон Земель."},
+{n:"Місяць",q:["Я супутник Землі.","Я завжди повернутий до Землі одним боком.","На мені ходили 12 астронавтів, а їхні сліди досі збереглися."],f:"Місяць — єдиний природний супутник Землі. Там немає вітру й дощу, тому сліди астронавтів залишаються дуже довго."},
+{n:"Комета",q:["Я схожа на велику брилу з льоду й пилу.","Коли я наближаюся до Сонця, у мене з’являється яскравий хвіст.","Мій хвіст завжди спрямований від Сонця."],f:"Комета — крижана брила. Біля Сонця лід випаровується й утворює хвіст, який завжди вказує в протилежний від Сонця бік."},
+{n:"Плутон",q:["Колись мене вважали дев’ятою планетою.","Від 2006 року я карликова планета.","Я менший за наш Місяць."],f:"Плутон — карликова планета, менша за Місяць. Дев’ятою планетою його вважали до 2006 року."},
+{n:"Пояс астероїдів",q:["Я складаюся з тисяч кам’яних брил.","Я розташований між Марсом і Юпітером.","Найбільший із моїх мешканців — карликова планета Церера."],f:"Між Марсом і Юпітером літають тисячі кам’яних брил — астероїдів. Найбільший із них — Церера."},
+{n:"Космічна станція (МКС)",q:["Я літаю навколо Землі, і в мені живуть астронавти.","Я облітаю Землю приблизно за 90 хвилин.","Астронавти на мені бачать схід сонця приблизно 16 разів на добу."],f:"МКС літає на висоті близько 400 км зі швидкістю понад 27 000 км/год і облітає Землю приблизно 16 разів на добу."}
+];
+const Q=[
+["Що таке Сонце?","Зірка",["Планета","Супутник"],"Сонце — гаряча зірка. Воно дає Землі світло й тепло."],
+["Скільки планет у Сонячній системі?","8",["7","9"],"Їх вісім. Плутон від 2006 року називають карликовою планетою."],
+["Що вчені знайшли на Марсі?","Сліди давніх річок і озер",["Покинуті міста","Густі ліси"],"Марсоходи побачили висохлі русла й мінерали, що утворюються у воді. Лід є й тепер — на полюсах і під поверхнею."],
+["Яка планета найбільша?","Юпітер",["Сатурн","Земля"],"У Юпітер вмістилося б понад 1000 планет завбільшки з Землю."],
+["З чого складаються кільця Сатурна?","З льоду й каміння",["З газу","З рідкої води"],"Це мільярди шматочків льоду й каміння: від піщинок до брил завбільшки з будинок."],
+["Скільки земних діб триває рік на Меркурії?","88",["365","12"],"Меркурій близько до Сонця й летить орбітою дуже швидко, тому рік там дуже короткий."],
+["Яка планета найгарячіша?","Венера",["Меркурій","Марс"],"Густа атмосфера тримає тепло Венери, як ковдра: там близько 465 °C."],
+["Чому Марс червоний?","У його ґрунті є іржа",["Він дуже гарячий","На ньому червоні моря"],"Пил і камені Марса містять оксид заліза — це така сама іржа, як на старому цвяху."],
+["Яка планета найдальша від Сонця?","Нептун",["Уран","Сатурн"],"Нептун — восьма планета. Його рік триває 165 земних років."],
+["Яка планета «лежить на боці»?","Уран",["Нептун","Земля"],"Вісь обертання Урана дуже нахилена, тому він котиться орбітою, ніби кулька."],
+["Що таке Велика червона пляма на Юпітері?","Величезна буря",["Гора","Озеро"],"Це буря, що триває вже кілька століть. Вона така велика, що в ній вмістилася б уся Земля."],
+["Скільки часу світло Сонця летить до Землі?","Близько 8 хвилин",["Одну секунду","Цілу добу"],"Світло летить дуже швидко, але до Сонця близько 150 мільйонів кілометрів."],
+["Скільки діб триває рік на Землі?","Близько 365",["Близько 30","Близько 100"],"Стільки діб Земля облітає Сонце. Тому кожні чотири роки до лютого додають ще один день."],
+["Яка планета найближча до Сонця?","Меркурій",["Венера","Марс"],"Меркурій — перша планета від Сонця й найменша з усіх."],
+["Хто досліджує поверхню Марса?","Марсоходи",["Літаки","Підводні човни"],"Марсоходи — роботи на колесах. Вони вивчають ґрунт і шукають сліди води. Людей на Марсі поки не було."],
+["Чому на Місяці довго зберігаються сліди астронавтів?","Там немає вітру й дощу",["Там дуже тепло","Там густа атмосфера"],"Без атмосфери немає вітру й дощу, тож сліди майже не руйнуються."],
+["У якої планети найвідоміші кільця?","У Сатурна",["У Марса","У Меркурія"],"Кільця є й в інших планет-гігантів, але в Сатурна вони найбільші та найяскравіші."],
+["Що таке комета?","Крижана брила з пилом",["Маленька зірка","Планета з кільцями"],"Біля Сонця лід випаровується й утворює хвіст, спрямований від Сонця."],
+["Скільки в Юпітера відомих супутників?","Понад 90",["Жодного","Один"],"Чотири найбільші відкрив Галілео Галілей 1610 року."]
+];
+const KEY="cosmo4",MAX={m1:16,m2:15,m3:16},TM=47;
+let S={m1:null,m2:null,m3:null},cur="m1";
+try{S=Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const M=[["m1","Порядок планет",m1],["m2","Космічні загадки",m2],["m3","Фінальна місія",m3]];
+const T=[...M,["sum","🏆 Підсумок",msum]];
+const tot=()=>M.reduce((s,[k])=>s+(S[k]||0),0);
+const pl=p=>`<span class="pl ${p.n=="Сатурн"?"ring":""}" style="--s:${p.s}px;--a:${p.a};--b:${p.b}"></span>`;
+const msg=(t,c)=>{const m=$("#msg");m.textContent=t;m.className="msg "+c};
+function head(){
+ $("#tabs").innerHTML=T.map(([k,t],i)=>`<button class="tab" role="tab" aria-selected="${k==cur}" data-k="${k}">${i<3?i+1+". ":""}${t}${S[k]!=null?" ✓":""}</button>`).join("");
+ $("#score").textContent=`⭐ ${tot()} з ${TM} балів`;
+}
+function go(k){cur=k;head();T.find(m=>m[0]==k)[2]()}
+function star(){
+ const left=M.filter(([k])=>S[k]==null);
+ if(left.length)return `<p>Щоб отримати зірку дослідника, пройди ще: ${left.map(m=>m[1]).join(", ")}.</p>`;
+ const t=tot(),r=t/TM,[e,n]=r>=.8?["🌟","Зірка дослідника"]:r>=.5?["⭐","Зірка мандрівника"]:["🚀","Юний космонавт"];
+ return `<div class="star">${e}</div><p><b>${n}!</b> Разом: ${t} з ${TM} балів.</p>`;
+}
+function sumHtml(){
+ return `<table class="tbl">${M.map(([k,t],i)=>`<tr><td>${i+1}. ${t}</td><td>${S[k]==null?"ще не пройдено":S[k]+" з "+MAX[k]}</td></tr>`).join("")}<tr><th>Разом</th><th>${tot()} з ${TM}</th></tr></table>${star()}`;
+}
+function msum(){$("#view").innerHTML=`<div class="card end"><h2>Підсумок трьох місій</h2>${sumHtml()}</div>`}
+function fin(k,pts){
+ S[k]=pts;save();head();
+ const nx={m1:"m2",m2:"m3"}[k],name=M.find(m=>m[0]==k)[1];
+ $("#view").innerHTML=`<div class="card end"><h2>${name}: готово!</h2><p class="big">${pts} з ${MAX[k]} ⭐</p>${k=="m3"?sumHtml():""}
+ <button class="btn" id="a">${nx?"Далі: "+M.find(m=>m[0]==nx)[1]:"Скинути все й почати знову"}</button><button class="btn alt" id="b">Пройти ще раз</button></div>`;
+ $("#a").onclick=()=>{if(nx)go(nx);else{S={m1:null,m2:null,m3:null};save();go("m1")}};
+ $("#b").onclick=()=>go(k);
+}
+/* Модуль 1 */
+function m1(){
+ let left=8,pts=0,sel=null,d=null;const tries={};
+ const near=p=>p.o==1?"це найближча планета до Сонця.":p.o==8?"це найдальша планета від Сонця.":`ця планета стоїть між планетами ${P[p.o-2].n} і ${P[p.o].n}.`;
+ $("#view").innerHTML=`<div class="card"><h2>Модуль 1. Порядок планет</h2>
+ <p>Сонце ☀️ — перед місцем №1. Перетягни кожну планету на її місце за порядком від Сонця. Можна також торкнутися планети, а потім — місця.</p>
+ <div class="slots">${P.map((p,i)=>`<button class="slot" data-n="${i+1}"><b>${i+1}</b></button>`).join("")}</div>
+ <div id="bank" class="bank">${sh(P).map(p=>`<button class="chip" data-n="${p.n}">${pl(p)}<span>${p.n}</span></button>`).join("")}</div>
+ <p id="msg" class="msg" aria-live="polite">Почнімо! Яка планета найближча до Сонця?</p></div>`;
+ const bank=$("#bank");
+ const clr=()=>$$(".slot").forEach(s=>s.classList.remove("over"));
+ const tog=c=>{bank.querySelectorAll(".chip.sel").forEach(x=>x.classList.remove("sel"));if(sel===c)sel=null;else{c.classList.add("sel");sel=c}};
+ const place=(c,s)=>{
+  if(!c||!s||s.classList.contains("full"))return;
+  const p=P.find(x=>x.n==c.dataset.n),n=+s.dataset.n;sel=null;
+  if(p.o==n){
+   const g=tries[p.n]?1:2;pts+=g;c.remove();s.classList.add("full");
+   s.innerHTML=`<b>${n}</b>${pl(p)}<span>${p.n}</span>`;
+   msg(`Правильно! ${p.n}: +${g} ⭐. ${p.f}`,"ok");
+   if(!--left)setTimeout(()=>fin("m1",pts),2500);
+  }else{tries[p.n]=1;c.classList.remove("sel");msg(`Ще ні. Підказка: ${near(p)}`,"bad")}
+ };
+ bank.onpointerdown=e=>{const c=e.target.closest(".chip");if(!c)return;d={c,x:e.clientX,y:e.clientY,g:null};c.setPointerCapture(e.pointerId)};
+ bank.onpointermove=e=>{
+  if(!d)return;
+  if(!d.g&&Math.hypot(e.clientX-d.x,e.clientY-d.y)>8){d.g=d.c.cloneNode(true);d.g.className="chip ghost";document.body.append(d.g)}
+  if(d.g){d.g.style.left=e.clientX+"px";d.g.style.top=e.clientY+"px";clr();const t=document.elementFromPoint(e.clientX,e.clientY)?.closest(".slot");if(t)t.classList.add("over")}
+ };
+ bank.onpointerup=bank.onpointercancel=e=>{
+  if(!d)return;const {c,g}=d;d=null;
+  if(g){g.remove();clr();place(c,document.elementFromPoint(e.clientX,e.clientY)?.closest(".slot"))}
+  else tog(c);
+ };
+ bank.onclick=e=>{const c=e.target.closest(".chip");if(c&&e.detail===0)tog(c)};
+ $$(".slot").forEach(s=>s.onclick=()=>sel&&place(sel,s));
+}
+/* Модуль 2 */
+function m2(){
+ const L=sh(R).slice(0,5);let i=0,pts=0;
+ const ask=()=>{
+  const p=L[i],opts=sh([p,...sh(R.filter(x=>x!=p)).slice(0,3)]),dead=new Set();let h=1;
+  const draw=res=>{
+   const worth=Math.max(1,4-h);
+   $("#view").innerHTML=`<div class="card"><h2>Модуль 2. Космічні загадки</h2>
+   <p class="mu">Загадка ${i+1} з 5. За правильну відповідь: ${res?res.g:worth} ⭐</p>
+   <ol class="hints">${p.q.slice(0,h).map(t=>`<li>${t}</li>`).join("")}</ol>
+   ${!res&&h<3?`<button class="btn alt" id="more">Ще підказка (−1 ⭐)</button>`:""}
+   <div class="opts">${opts.map(o=>`<button class="opt ${res&&o==p?"ok":dead.has(o)?"bad":""}" data-n="${o.n}" ${res||dead.has(o)?"disabled":""}>${o.n}</button>`).join("")}</div>
+   ${res?`<p class="msg ok">Правильно! +${res.g} ⭐. ${p.f}</p><button class="btn" id="next">${i<4?"Наступна загадка":"Підсумок"}</button>`:`<p class="msg bad" id="m"></p>`}</div>`;
+   if($("#more"))$("#more").onclick=()=>{h++;draw()};
+   $$(".opt:not(:disabled)").forEach(b=>b.onclick=()=>{
+    const o=R.find(x=>x.n==b.dataset.n);
+    if(o==p){pts+=worth;draw({g:worth})}
+    else{const more=h<3;dead.add(o);if(more)h++;draw();$("#m").textContent=`Ні, це не ${o.n}. `+(more?"Ось ще підказка!":"Спробуй ще раз!")}
+   });
+   if($("#next"))$("#next").onclick=()=>{++i<5?ask():fin("m2",pts)};
+  };
+  draw();
+ };
+ ask();
+}
+/* Модуль 3 */
+function m3(){
+ const L=sh(Q).slice(0,8);let i=0,pts=0;
+ const ask=()=>{
+  const [q,a,w,e]=L[i],o=sh([a,...w]);
+  $("#view").innerHTML=`<div class="card"><h2>Модуль 3. Фінальна місія</h2><p class="mu">Питання ${i+1} з 8. За правильну відповідь: 2 ⭐</p>
+  <p class="q">${q}</p><div class="opts">${o.map(t=>`<button class="opt">${t}</button>`).join("")}</div><div id="r"></div></div>`;
+  $$(".opt").forEach(b=>b.onclick=()=>{
+   const ok=b.textContent==a;if(ok)pts+=2;
+   $$(".opt").forEach(x=>{x.disabled=true;if(x.textContent==a)x.classList.add("ok");else if(x==b)x.classList.add("bad")});
+   $("#r").innerHTML=`<p class="msg ${ok?"ok":"bad"}">${ok?"Правильно! +2 ⭐":"Правильна відповідь: "+a+"."} ${e}</p><button class="btn" id="n">${i<7?"Далі":"Підсумок"}</button>`;
+   $("#n").onclick=()=>{++i<8?ask():fin("m3",pts)};
+  });
+ };
+ ask();
+}
+$("#tabs").onclick=e=>{const b=e.target.closest("[data-k]");if(b)go(b.dataset.k)};
+$("#reset").onclick=()=>{if(confirm("Скинути всі бали й почати спочатку?")){S={m1:null,m2:null,m3:null};save();go("m1")}};
+go("m1");
+</script>
+</body>
+</html>
