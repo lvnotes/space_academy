@@ -44,6 +44,9 @@ p{margin:.5em 0}.mu{color:var(--mu)}
 .q{font-size:22px;font-weight:800;line-height:1.3}
 .tbl{width:100%;border-collapse:collapse;margin:10px 0;text-align:left}.tbl td,.tbl th{padding:8px 4px;border-bottom:2px solid var(--line)}.tbl td+td,.tbl th+th{text-align:right;white-space:nowrap}.tbl th{color:var(--sun);font-size:20px}
 .end{text-align:center}.big{font-size:40px;font-weight:900;color:var(--sun);margin:.2em 0}.star{font-size:72px;line-height:1.1}
+input{font:inherit;width:100%;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:#262b6b;color:var(--tx)}
+label{font-weight:700}.btn:disabled{opacity:.5;cursor:default}
+.work #tabs,.work #score,.work #wbtn,.work footer{display:none}
 footer{text-align:center}footer button{font:inherit;font-size:14px;color:var(--mu);background:none;border:0;text-decoration:underline;cursor:pointer}
 </style>
 </head>
@@ -51,7 +54,7 @@ footer{text-align:center}footer button{font:inherit;font-size:14px;color:var(--m
 <header>
  <div class="brand"><span class="sunball"></span><div><h1>Космічна академія</h1><p class="mu">Мандрівка Сонячною системою для 4 класу</p></div></div>
  <nav id="tabs" class="tabs" role="tablist"></nav>
- <p id="score" class="pill"></p>
+ <p id="score" class="pill"></p> <button class="btn alt" id="wbtn">Самостійна робота</button>
 </header>
 <main id="view"></main>
 <footer><button id="reset">Почати все спочатку</button></footer>
@@ -103,25 +106,60 @@ try{S=Object.assign(S,JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const M=[["m1","Порядок планет",m1],["m2","Космічні загадки",m2],["m3","Фінальна місія",m3]];
 const T=[...M,["sum","🏆 Підсумок",msum]];
-const tot=()=>M.reduce((s,[k])=>s+(S[k]||0),0);
+const tot=(o=S)=>M.reduce((s,[k])=>s+(o[k]||0),0);
 const pl=p=>`<span class="pl ${p.n=="Сатурн"?"ring":""}" style="--s:${p.s}px;--a:${p.a};--b:${p.b}"></span>`;
 const msg=(t,c)=>{const m=$("#msg");m.textContent=t;m.className="msg "+c};
+// Адреса веб-застосунку Google Apps Script (закінчується на /exec). Без неї самостійна робота не зможе відправити результат.
+const SCRIPT_URL="";
+let W=false,run=null;
+const rec=r=>{if(W)run.det.push(r)};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function head(){
  $("#tabs").innerHTML=T.map(([k,t],i)=>`<button class="tab" role="tab" aria-selected="${k==cur}" data-k="${k}">${i<3?i+1+". ":""}${t}${S[k]!=null?" ✓":""}</button>`).join("");
  $("#score").textContent=`⭐ ${tot()} з ${TM} балів`;
 }
 function go(k){cur=k;head();T.find(m=>m[0]==k)[2]()}
-function star(){
- const left=M.filter(([k])=>S[k]==null);
+function star(o=S){
+ const left=M.filter(([k])=>o[k]==null);
  if(left.length)return `<p>Щоб отримати зірку дослідника, пройди ще: ${left.map(m=>m[1]).join(", ")}.</p>`;
- const t=tot(),r=t/TM,[e,n]=r>=.8?["🌟","Зірка дослідника"]:r>=.5?["⭐","Зірка мандрівника"]:["🚀","Юний космонавт"];
+ const t=tot(o),r=t/TM,[e,n]=r>=.8?["🌟","Зірка дослідника"]:r>=.5?["⭐","Зірка мандрівника"]:["🚀","Юний космонавт"];
  return `<div class="star">${e}</div><p><b>${n}!</b> Разом: ${t} з ${TM} балів.</p>`;
 }
-function sumHtml(){
- return `<table class="tbl">${M.map(([k,t],i)=>`<tr><td>${i+1}. ${t}</td><td>${S[k]==null?"ще не пройдено":S[k]+" з "+MAX[k]}</td></tr>`).join("")}<tr><th>Разом</th><th>${tot()} з ${TM}</th></tr></table>${star()}`;
+function sumHtml(o=S){
+ return `<table class="tbl">${M.map(([k,t],i)=>`<tr><td>${i+1}. ${t}</td><td>${o[k]==null?"ще не пройдено":o[k]+" з "+MAX[k]}</td></tr>`).join("")}<tr><th>Разом</th><th>${tot(o)} з ${TM}</th></tr></table>${star(o)}`;
 }
 function msum(){$("#view").innerHTML=`<div class="card end"><h2>Підсумок трьох місій</h2>${sumHtml()}</div>`}
+function wstart(){
+ $("#view").innerHTML=`<div class="card"><h2>Самостійна робота</h2><p>Пройди всі три модулі підряд. Результат побачить учитель.</p>
+ <p><label>Ім’я та прізвище<br><input id="wn" maxlength="40" autocomplete="off"></label></p>
+ <p><label>Клас<br><input id="wc" maxlength="10" placeholder="4-А" autocomplete="off"></label></p>
+ <button class="btn" id="ws" disabled>Почати</button></div>`;
+ const chk=()=>{$("#ws").disabled=!($("#wn").value.trim()&&$("#wc").value.trim())};
+ $("#wn").oninput=$("#wc").oninput=chk;
+ $("#ws").onclick=()=>{W=true;run={name:$("#wn").value.trim(),cls:$("#wc").value.trim(),t0:Date.now(),res:{},det:[]};document.body.classList.add("work");go("m1")};
+}
+function wfin(k,pts){
+ run.res[k]=pts;const nx={m1:"m2",m2:"m3"}[k];
+ if(nx){$("#view").innerHTML=`<div class="card end"><h2>Модуль завершено!</h2><p>Молодець! Переходимо далі.</p><button class="btn" id="a">Далі</button></div>`;$("#a").onclick=()=>go(nx);return}
+ send();
+}
+function send(){
+ const r=run.res,t=tot(r);
+ const bad=run.det.filter(x=>{const [g,m]=x[4].split("/");return g!=m}).map(x=>x[0]).join(", ");
+ const pay={w:"Космічна академія",sheet:"Космічна академія",parts:["Модуль 1","Модуль 2","Модуль 3"],cls:run.cls,name:run.name,score:t,total:TM,pct:Math.round(100*t/TM),t1:r.m1,t2:r.m2,t3:r.m3,sec:Math.round((Date.now()-run.t0)/1000),answers:bad?"помилки: "+bad:"без помилок",details:run.det};
+ const show=(c,m,retry)=>{
+  $("#view").innerHTML=`<div class="card end"><h2>Дякуємо, ${esc(run.name)}!</h2>${sumHtml(r)}<p class="msg ${c}">${m}</p>${retry?`<button class="btn" id="rt">Спробувати ще раз</button>`:""}</div>`;
+  if(retry)$("#rt").onclick=post;
+ };
+ function post(){
+  if(!SCRIPT_URL)return show("bad","Результат не відправлено: у сторінці не вказано адресу таблиці.");
+  show("","Відправляю результат…");
+  fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(pay)}).then(()=>show("ok","Результат відправлено вчителю ✓")).catch(()=>show("bad","Не вдалося відправити. Перевір інтернет і спробуй ще раз.",1));
+ }
+ post();
+}
 function fin(k,pts){
+ if(W)return wfin(k,pts);
  S[k]=pts;save();head();
  const nx={m1:"m2",m2:"m3"}[k],name=M.find(m=>m[0]==k)[1];
  $("#view").innerHTML=`<div class="card end"><h2>${name}: готово!</h2><p class="big">${pts} з ${MAX[k]} ⭐</p>${k=="m3"?sumHtml():""}
@@ -145,11 +183,11 @@ function m1(){
   if(!c||!s||s.classList.contains("full"))return;
   const p=P.find(x=>x.n==c.dataset.n),n=+s.dataset.n;sel=null;
   if(p.o==n){
-   const g=tries[p.n]?1:2;pts+=g;c.remove();s.classList.add("full");
+   const g=tries[p.n]?1:2;pts+=g;rec(["1."+p.o,"Місце №"+p.o+" від Сонця",p.n,p.n,g+"/2",tries[p.n]?"помилок: "+tries[p.n]:""]);c.remove();s.classList.add("full");
    s.innerHTML=`<b>${n}</b>${pl(p)}<span>${p.n}</span>`;
    msg(`Правильно! ${p.n}: +${g} ⭐. ${p.f}`,"ok");
    if(!--left)setTimeout(()=>fin("m1",pts),2500);
-  }else{tries[p.n]=1;c.classList.remove("sel");msg(`Ще ні. Підказка: ${near(p)}`,"bad")}
+  }else{tries[p.n]=(tries[p.n]||0)+1;c.classList.remove("sel");msg(`Ще ні. Підказка: ${near(p)}`,"bad")}
  };
  bank.onpointerdown=e=>{const c=e.target.closest(".chip");if(!c)return;d={c,x:e.clientX,y:e.clientY,g:null};c.setPointerCapture(e.pointerId)};
  bank.onpointermove=e=>{
@@ -181,7 +219,7 @@ function m2(){
    if($("#more"))$("#more").onclick=()=>{h++;draw()};
    $$(".opt:not(:disabled)").forEach(b=>b.onclick=()=>{
     const o=R.find(x=>x.n==b.dataset.n);
-    if(o==p){pts+=worth;draw({g:worth})}
+    if(o==p){pts+=worth;rec(["2."+(i+1),p.q[0],[...[...dead].map(x=>x.n),p.n].join(" → "),p.n,worth+"/3","підказок: "+h]);draw({g:worth})}
     else{const more=h<3;dead.add(o);if(more)h++;draw();$("#m").textContent=`Ні, це не ${o.n}. `+(more?"Ось ще підказка!":"Спробуй ще раз!")}
    });
    if($("#next"))$("#next").onclick=()=>{++i<5?ask():fin("m2",pts)};
@@ -198,7 +236,7 @@ function m3(){
   $("#view").innerHTML=`<div class="card"><h2>Модуль 3. Фінальна місія</h2><p class="mu">Питання ${i+1} з 8. За правильну відповідь: 2 ⭐</p>
   <p class="q">${q}</p><div class="opts">${o.map(t=>`<button class="opt">${t}</button>`).join("")}</div><div id="r"></div></div>`;
   $$(".opt").forEach(b=>b.onclick=()=>{
-   const ok=b.textContent==a;if(ok)pts+=2;
+   const ok=b.textContent==a;if(ok)pts+=2;rec(["3."+(i+1),q,b.textContent,a,ok?"2/2":"0/2",""]);
    $$(".opt").forEach(x=>{x.disabled=true;if(x.textContent==a)x.classList.add("ok");else if(x==b)x.classList.add("bad")});
    $("#r").innerHTML=`<p class="msg ${ok?"ok":"bad"}">${ok?"Правильно! +2 ⭐":"Правильна відповідь: "+a+"."} ${e}</p><button class="btn" id="n">${i<7?"Далі":"Підсумок"}</button>`;
    $("#n").onclick=()=>{++i<8?ask():fin("m3",pts)};
@@ -208,7 +246,8 @@ function m3(){
 }
 $("#tabs").onclick=e=>{const b=e.target.closest("[data-k]");if(b)go(b.dataset.k)};
 $("#reset").onclick=()=>{if(confirm("Скинути всі бали й почати спочатку?")){S={m1:null,m2:null,m3:null};save();go("m1")}};
-go("m1");
+$("#wbtn").onclick=wstart;
+if(new URLSearchParams(location.search).get("mode")==="work"){document.body.classList.add("work");wstart()}else go("m1");
 </script>
 </body>
 </html>
