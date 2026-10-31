@@ -110,7 +110,7 @@ const tot=(o=S)=>M.reduce((s,[k])=>s+(o[k]||0),0);
 const pl=p=>`<span class="pl ${p.n=="Сатурн"?"ring":""}" style="--s:${p.s}px;--a:${p.a};--b:${p.b}"></span>`;
 const msg=(t,c)=>{const m=$("#msg");m.textContent=t;m.className="msg "+c};
 // Адреса веб-застосунку Google Apps Script (закінчується на /exec). Без неї самостійна робота не зможе відправити результат.
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbzTu3QJcex0IMvKaWQaKSJwJhXIWqBhURW6nHpadAN6MehUzaaOD7WleLZl59fRB0fe/exec";
+const SCRIPT_URL="";
 let W=false,run=null;
 const rec=r=>{if(W)run.det.push(r)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -132,7 +132,7 @@ function msum(){$("#view").innerHTML=`<div class="card end"><h2>Підсумок
 function wstart(){
  $("#view").innerHTML=`<div class="card"><h2>Самостійна робота</h2><p>Пройди всі три модулі підряд. Результат побачить учитель.</p>
  <p><label>Ім’я та прізвище<br><input id="wn" maxlength="40" autocomplete="off"></label></p>
- <p><label>Клас<br><input id="wc" maxlength="10" placeholder="4-Б" autocomplete="off"></label></p>
+ <p><label>Клас<br><input id="wc" maxlength="10" placeholder="4-А" autocomplete="off"></label></p>
  <button class="btn" id="ws" disabled>Почати</button></div>`;
  const chk=()=>{$("#ws").disabled=!($("#wn").value.trim()&&$("#wc").value.trim())};
  $("#wn").oninput=$("#wc").oninput=chk;
@@ -146,7 +146,7 @@ function wfin(k,pts){
 function send(){
  const r=run.res,t=tot(r);
  const bad=run.det.filter(x=>{const [g,m]=x[4].split("/");return g!=m}).map(x=>x[0]).join(", ");
- const pay={w:"Космічна академія",sheet:"Космічна академія",parts:["Модуль 1","Модуль 2","Модуль 3"],cls:run.cls,name:run.name,score:t,total:TM,pct:Math.round(100*t/TM),t1:r.m1,t2:r.m2,t3:r.m3,sec:Math.round((Date.now()-run.t0)/1000),answers:bad?"помилки: "+bad:"без помилок",details:run.det};
+ const pay={w:"Космічна академія",sheet:"Космічна академія",parts:["Модуль 1","Модуль 2","Модуль 3"],detailSheet:"Космічна академія (деталі)",detailNote:"Підказки / помилки",cls:run.cls,name:run.name,score:t,total:TM,pct:Math.round(100*t/TM),t1:r.m1,t2:r.m2,t3:r.m3,sec:Math.round((Date.now()-run.t0)/1000),answers:bad?"помилки: "+bad:"без помилок",details:run.det};
  const show=(c,m,retry)=>{
   $("#view").innerHTML=`<div class="card end"><h2>Дякуємо, ${esc(run.name)}!</h2>${sumHtml(r)}<p class="msg ${c}">${m}</p>${retry?`<button class="btn" id="rt">Спробувати ще раз</button>`:""}</div>`;
   if(retry)$("#rt").onclick=post;
