@@ -110,7 +110,7 @@ const tot=(o=S)=>M.reduce((s,[k])=>s+(o[k]||0),0);
 const pl=p=>`<span class="pl ${p.n=="Сатурн"?"ring":""}" style="--s:${p.s}px;--a:${p.a};--b:${p.b}"></span>`;
 const msg=(t,c)=>{const m=$("#msg");m.textContent=t;m.className="msg "+c};
 // Адреса веб-застосунку Google Apps Script (закінчується на /exec). Без неї самостійна робота не зможе відправити результат.
-const SCRIPT_URL="";
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbzTu3QJcex0IMvKaWQaKSJwJhXIWqBhURW6nHpadAN6MehUzaaOD7WleLZl59fRB0fe/exec";
 let W=false,run=null;
 const rec=r=>{if(W)run.det.push(r)};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -132,7 +132,7 @@ function msum(){$("#view").innerHTML=`<div class="card end"><h2>Підсумок
 function wstart(){
  $("#view").innerHTML=`<div class="card"><h2>Самостійна робота</h2><p>Пройди всі три модулі підряд. Результат побачить учитель.</p>
  <p><label>Ім’я та прізвище<br><input id="wn" maxlength="40" autocomplete="off"></label></p>
- <p><label>Клас<br><input id="wc" maxlength="10" placeholder="4-А" autocomplete="off"></label></p>
+ <p><label>Клас<br><input id="wc" maxlength="10" placeholder="4-Б" autocomplete="off"></label></p>
  <button class="btn" id="ws" disabled>Почати</button></div>`;
  const chk=()=>{$("#ws").disabled=!($("#wn").value.trim()&&$("#wc").value.trim())};
  $("#wn").oninput=$("#wc").oninput=chk;
